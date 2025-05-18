@@ -1,11 +1,14 @@
 import numpy as np
 
 class HillClimbingOptimizer:
-    def __init__(self, helper):
+    def __init__(self, helper, seed=None):
         """
-        :param helper: An instance of WeddingSeatingHelper or similar class providing necessary methods
+        :param helper: An instance of WeddingSeatingHelper
+        :param seed: Optional seed for reproducibility
         """
         self.helper = helper
+        if seed is not None:
+            np.random.seed(seed)
 
     def run(self, verbose=False):
         """
