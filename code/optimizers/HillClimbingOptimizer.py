@@ -1,3 +1,5 @@
+import numpy as np
+
 class HillClimbingOptimizer:
     def __init__(self, helper):
         """
