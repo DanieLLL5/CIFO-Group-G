@@ -13,7 +13,7 @@ class GeneticAlgorithm:
         p_xo=0.8,
         p_m=0.05,
         selection_method="battle",
-        elitism=False,
+        elitism=True,
         n_elite=10,
         n_battles=5,
         p_pity=0.0001,
