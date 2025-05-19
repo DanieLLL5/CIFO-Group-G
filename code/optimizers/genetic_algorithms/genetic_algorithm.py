@@ -3,7 +3,7 @@ import numpy as np
 from utils.WeddingSeatingHelper import fitness, generate_solution
 from optimizers.genetic_algorithm.selection import selection
 from optimizers.genetic_algorithm.mutation import mutation
-# from optimizers.genetic_algorithm.crossover import crossover  # you’ll plug this in soon
+from optimizers.genetic_algorithm.crossover import crossover  # Crossover is now integrated
 
 class GeneticAlgorithm:
     def __init__(
@@ -20,6 +20,7 @@ class GeneticAlgorithm:
         swap=True,
         table_flip=True,
         relationship_augmenter=True,
+        crossover_type="single table swap"  # Allow choice of crossover strategy
     ):
         self.pop_size = pop_size
         self.num_gen = num_gen
@@ -33,6 +34,7 @@ class GeneticAlgorithm:
         self.swap = swap
         self.table_flip = table_flip
         self.relationship_augmenter = relationship_augmenter
+        self.crossover_type = crossover_type
 
         self.history = []
         self.best_solution = None
@@ -59,9 +61,10 @@ class GeneticAlgorithm:
             # Crossover & Mutation
             for i in range(self.pop_size // 2):
                 if random.random() < self.p_xo:
-                    # TODO: replace this once crossover is implemented
-                    pass
-                    # selected_population[i], selected_population[-i-1] = crossover(...)
+                    selected_population[i], selected_population[-i - 1] = crossover(
+                        selected_population[i], selected_population[-i - 1],
+                        crossover=self.crossover_type
+                    )
                 elif random.random() < self.p_m * 2:
                     if random.random() < 0.5:
                         selected_population[i] = mutation(
@@ -88,7 +91,6 @@ class GeneticAlgorithm:
                 self.best_solution = selected_population[gen_best_idx]
 
             self.history.append(self.best_fitness)
-
             population = selected_population
 
             if verbose:
