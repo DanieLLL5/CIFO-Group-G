@@ -3,7 +3,7 @@ import numpy as np
 from utils.WeddingSeatingHelper import fitness, generate_solution
 from optimizers.genetic_algorithms.selection import selection
 from optimizers.genetic_algorithms.mutation import mutation
-from optimizers.genetic_algorithms.crossover import crossover  # Crossover is now integrated
+from optimizers.genetic_algorithms.crossover import crossover
 
 class GeneticAlgorithm:
     def __init__(
@@ -20,7 +20,7 @@ class GeneticAlgorithm:
         swap=True,
         table_flip=True,
         relationship_augmenter=True,
-        crossover_type="single table swap"  # Allow choice of crossover strategy
+        crossover_type="single table swap"
     ):
         self.pop_size = pop_size
         self.num_gen = num_gen
