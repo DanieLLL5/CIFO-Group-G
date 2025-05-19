@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from utils.WeddingSeatingHelper import fitness, generate_solution
+from utils.WeddingSeatingHelper import WeddingSeatingHelper
 from optimizers.genetic_algorithms.selection import selection
 from optimizers.genetic_algorithms.mutation import mutation
 from optimizers.genetic_algorithms.crossover import crossover
@@ -8,6 +8,7 @@ from optimizers.genetic_algorithms.crossover import crossover
 class GeneticAlgorithm:
     def __init__(
         self,
+        helper: WeddingSeatingHelper,
         pop_size=100,
         num_gen=50,
         p_xo=0.8,
@@ -22,6 +23,7 @@ class GeneticAlgorithm:
         relationship_augmenter=True,
         crossover_type="single table swap"
     ):
+        self.helper = helper
         self.pop_size = pop_size
         self.num_gen = num_gen
         self.p_xo = p_xo
@@ -41,7 +43,8 @@ class GeneticAlgorithm:
         self.best_fitness = float("-inf")
 
     def optimize(self, verbose=True):
-        population = [generate_solution() for _ in range(self.pop_size)]
+        # Use helper to generate initial population
+        population = [self.helper.generate_solution() for _ in range(self.pop_size)]
 
         for gen in range(self.num_gen):
             if verbose:
@@ -81,8 +84,8 @@ class GeneticAlgorithm:
                             self.relationship_augmenter,
                         )
 
-            # Evaluate and track best
-            fitnesses = [fitness(ind) for ind in selected_population]
+            # Evaluate and track best fitness using helper.fitness()
+            fitnesses = [self.helper.fitness(ind) for ind in selected_population]
             gen_best_idx = np.argmax(fitnesses)
             gen_best_fit = fitnesses[gen_best_idx]
 
