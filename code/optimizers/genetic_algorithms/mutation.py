@@ -1,9 +1,15 @@
 import random
-from utils.WeddingSeatingHelper import get_neighbours, sorter2
 
-def mutation(individual, swap=True, table_flip=True, relationship_augmenter=True):
+def mutation(individual, helper, swap=True, table_flip=True, relationship_augmenter=True):
     """
     Applies a random mutation to an individual based on enabled mutation types.
+    
+    :param individual: Current solution (list of tables with guests)
+    :param helper: An instance of WeddingSeatingHelper
+    :param swap: Enable swap mutation
+    :param table_flip: Enable table flip mutation
+    :param relationship_augmenter: Enable relationship augmenter mutation
+    :return: mutated individual
     """
     # Collect enabled mutation types
     mutations = []
@@ -21,7 +27,7 @@ def mutation(individual, swap=True, table_flip=True, relationship_augmenter=True
 
     if mutation == "swap":
         # Swap two guests from neighboring solution
-        individual = random.choice(get_neighbours(individual))
+        individual = random.choice(helper.get_neighbours(individual))
 
     elif mutation == "table_flip":
         individual_transformed = []
@@ -30,7 +36,7 @@ def mutation(individual, swap=True, table_flip=True, relationship_augmenter=True
             for j in range(len(individual[i])):
                 individual_transformed.append([individual[i][j], i])
 
-        individual_transformed.sort(key=sorter2)
+        individual_transformed.sort(key=helper.sorter2)
 
         for i in range(len(individual_transformed) // 2):
             i1 = individual_transformed[i]
