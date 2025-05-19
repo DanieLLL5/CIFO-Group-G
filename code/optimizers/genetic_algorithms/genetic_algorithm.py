@@ -1,9 +1,9 @@
 import random
 import numpy as np
 from utils.WeddingSeatingHelper import fitness, generate_solution
-from optimizers.genetic_algorithm.selection import selection
-from optimizers.genetic_algorithm.mutation import mutation
-from optimizers.genetic_algorithm.crossover import crossover  # Crossover is now integrated
+from optimizers.genetic_algorithms.selection import selection
+from optimizers.genetic_algorithms.mutation import mutation
+from optimizers.genetic_algorithms.crossover import crossover  # Crossover is now integrated
 
 class GeneticAlgorithm:
     def __init__(
