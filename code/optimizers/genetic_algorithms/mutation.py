@@ -13,7 +13,7 @@ def mutation(individual, helper, swap=True, table_flip=True, relationship_augmen
 
     #If the user hasn't picked any mutations he will be warned
     if len(mutations) == 0:
-        return raise ValueError("No mutation method selected. Please select at least one mutation method.")
+        raise ValueError("No mutation method selected. Please select at least one mutation method.")
 
     mutation = random.choice(mutations)
 
