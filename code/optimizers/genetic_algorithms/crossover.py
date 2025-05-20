@@ -1,5 +1,5 @@
 import copy
-from code.genetic_algorithms.helper import repair_solution
+from .helpers import repair_solution
 
 def crossover(individual1, individual2, crossover = "single table swap"):
     print(individual1, individual2)
