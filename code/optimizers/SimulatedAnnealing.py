@@ -3,7 +3,7 @@ import random
 import math
 
 class SimulatedAnnealingOptimizer:
-    def __init__(self, helper, L=200, k=1.1, c=1000000, stop=5, seed=42):
+    def __init__(self, helper, L=200, k=1.1, c=1000000, stop=5, seed=None):
         """
         :param helper: An instance of WeddingSeatingHelper
         :param L: Number of temperature iterations
@@ -17,8 +17,8 @@ class SimulatedAnnealingOptimizer:
         self.k = k
         self.c = c
         self.stop = stop
-        random.seed(seed)
-        np.random.seed(seed)
+        if seed is not None:
+            np.random.seed(seed)
 
     def run(self, verbose=False):
         current_sol = self.helper.generate_solution()
