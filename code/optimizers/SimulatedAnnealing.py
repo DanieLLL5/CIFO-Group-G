@@ -17,7 +17,7 @@ class SimulatedAnnealingOptimizer:
         self.k = k
         self.c = c
         self.stop = stop
-	self.initial_solution = initial_solution
+        self.initial_solution = initial_solution
         if seed is not None:
             np.random.seed(seed)
 
@@ -28,11 +28,11 @@ class SimulatedAnnealingOptimizer:
 
         for _ in range(self.L):
             current_fit = self.helper.fitness(current_sol)
-	    #Storing the neighbours of our solution
+	        #Storing the neighbours of our solution
             neighbours = self.helper.get_neighbours(current_sol)
-	    #Making a list of all the neighbours and their fitnesses
+	        #Making a list of all the neighbours and their fitnesses
             neighbours_fitness = [(n, self.helper.fitness(n)) for n in neighbours]
-	    #Sorting the neighbours by descending fitness
+	        #Sorting the neighbours by descending fitness
             neighbours_fitness.sort(key=self.helper.sorter, reverse=True)
 
             #Deciding if our current solution should switch with the most fit individual
@@ -43,7 +43,7 @@ class SimulatedAnnealingOptimizer:
                 if random.random() < math.exp(delta / temperature):
                     current_sol = neighbour
                     break
-	    #By doing this we make sure the algorithm isn't stuck and after not improving for too long it stops
+	        #By doing this we make sure the algorithm isn't stuck and after not improving for too long it stops
             if current_fit >= self.helper.fitness(current_sol):
                 count += 1
             else:
