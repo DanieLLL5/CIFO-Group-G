@@ -54,7 +54,8 @@ def crossover(individual1, individual2, crossover = "single table swap"):
             child1.append(individual2[table*2+1])
             child2.append(individual1[table*2+1])
 
-
+    else:
+        raise ValueError("Invalid crossover method. Choose 'single table swap' or 'table by table'.")
 
     #Now we need to repair the duplicates and missing guests we introduced in the crossovers
         

@@ -58,6 +58,10 @@ def selection(population, pop_size, helper, selection="battle", elitism=False, n
                 selected_population.append(random_individual)
             elif random.random() < p_pity:
                 selected_population.append(random_individual)
-                
+        
+
+        else:
+            raise ValueError("Invalid selection method. Choose 'battle' or 'double_roullette'.")
+        
     # return the selected individuals
     return selected_population
