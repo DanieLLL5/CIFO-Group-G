@@ -40,7 +40,7 @@ class GeneticAlgorithm:
         self.swap = swap
         self.table_flip = table_flip
         self.relationship_augmenter = relationship_augmenter
-        
+
         # Dependency injections or default implementations
         self.selection_func = selection_func
         self.crossover_func = crossover_func
@@ -53,6 +53,7 @@ class GeneticAlgorithm:
         for i in range(self.num_gen):
             print(f"gen {i}")
             #Probablistically the best individuals pass the selection process
+            selected_population = self.selection_func(
             population = self.selection_func(
                 population,
                 self.pop_size,
@@ -65,6 +66,7 @@ class GeneticAlgorithm:
             )
 
             #Some will do crossover, some will mutate and others will stay as is for the next generation
+            for i in range(self.pop_size // 2):
 
             new_population = []
             crossedover_indexes = []
@@ -73,6 +75,15 @@ class GeneticAlgorithm:
             #Crossover
             for i in range(0,self.pop_size-1,2):
                 if random.random() < self.p_xo:
+                    selected_population[i], selected_population[-i-1] = self.crossover_func(
+                        selected_population[i], selected_population[-i-1])
+                elif random.random() < self.p_m * 2:
+                    if random.random() < 0.5:
+                        selected_population[i] = self.mutation_func(
+                            selected_population[i], self.helper, self.swap, self.table_flip, self.relationship_augmenter)
+                    else:
+                        selected_population[-i-1] = self.mutation_func(
+                            selected_population[-i-1], self.helper, self.swap, self.table_flip, self.relationship_augmenter)
                     child1, child2 = self.crossover_func(
                         population[i], population[i+1])
                     
@@ -103,5 +114,5 @@ class GeneticAlgorithm:
 
         best_fitness = max([self.helper.fitness(individual) for individual in population])
         best_individual = population[np.argmax([self.helper.fitness(individual) for individual in population])]
-              
+
         return best_fitness, best_individual
