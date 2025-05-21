@@ -46,61 +46,62 @@ class GeneticAlgorithm:
         self.crossover_func = crossover_func
         self.mutation_func = mutation_func
 
-    def run(self, return_fitness_curve=False):
-        best_fitness = float("-inf")
-        best_solution = None
-        fitness_curve = []
-
-        # Initialize population
+    def run(self):
+        #Generate a random initial population
         population = [self.helper.generate_solution() for _ in range(self.pop_size)]
 
-        for gen in range(self.num_gen):
-            # Evaluate fitness of current population
-            fitnesses = [self.helper.fitness(ind) for ind in population]
+        for i in range(self.num_gen):
+            print(f"gen {i}")
+            #Probablistically the best individuals pass the selection process
+            population = self.selection_func(
+                population,
+                self.pop_size,
+                self.helper,
+                selection=self.selection_method,
+                elitism=self.elitism,
+                n_elite=self.n_elite,
+                n_battles=self.n_battles,
+                p_pity=self.p_pity
+            )
 
-            # Save best of this generation
-            max_fitness = max(fitnesses)
-            max_index = fitnesses.index(max_fitness)
+            #Some will do crossover, some will mutate and others will stay as is for the next generation
 
-            if max_fitness > best_fitness:
-                best_fitness = max_fitness
-                best_solution = population[max_index]
+            new_population = []
+            crossedover_indexes = []
+            mutated_indexes = []
 
-            if return_fitness_curve:
-                fitness_curve.append(max_fitness)
-
-            # Apply selection
-            selected = self.selection_func(population, fitnesses, method=self.selection_method, **self.selection_args)
-
-            # Apply crossover
-            offspring = []
-            while len(offspring) < self.pop_size:
-                parent1, parent2 = random.sample(selected, 2)
+            #Crossover
+            for i in range(0,self.pop_size-1,2):
                 if random.random() < self.p_xo:
-                    child1, child2 = self.crossover_func(parent1, parent2)
-                    offspring.extend([child1, child2])
-                else:
-                    offspring.extend([copy.deepcopy(parent1), copy.deepcopy(parent2)])
+                    child1, child2 = self.crossover_func(
+                        population[i], population[i+1])
+                    
+                    crossedover_indexes.append(i)
+                    crossedover_indexes.append(i+1)
+                    new_population.append(child1)
+                    new_population.append(child2)
 
-            offspring = offspring[:self.pop_size]  # Trim extra if needed
+            #Mutation to individuals that didn't crossover
+            for i in range(self.pop_size):
+                if i not in crossedover_indexes and random.random() < self.p_m:
+                    mutated = self.mutation_func(
+                        population[i], self.helper, self.swap, self.table_flip, self.relationship_augmenter)
+                    
+                    mutated_indexes.append(i)
+                    new_population.append(mutated)
 
-            # Apply mutation
-            for i in range(len(offspring)):
-                if random.random() < self.p_m:
-                    offspring[i] = self.mutation_func(
-                        offspring[i],
-                        swap=self.swap,
-                        table_flip=self.table_flip,
-                        relationship_augmenter=self.relationship_augmenter
-                    )
+            #Adding the individuals that didn't crossover or mutate
+            for i in range(self.pop_size):
+                if i not in crossedover_indexes and i not in mutated_indexes:
+                    new_population.append(population[i])
 
-            # Apply elitism if enabled
-            if self.elitism:
-                elite_indices = sorted(range(len(fitnesses)), key=lambda i: fitnesses[i], reverse=True)[:self.n_elite]
-                elites = [population[i] for i in elite_indices]
-                offspring[:self.n_elite] = elites
+            population = new_population[:self.pop_size]
 
-            # Replace old population
-            population = offspring
+            #Print the best and average fitness of the population
+            print(max([self.helper.fitness(individual) for individual in population]),
+                  np.mean([self.helper.fitness(individual) for individual in population]))
 
-        return (best_fitness, fitness_curve) if return_fitness_curve else (best_fitness, best_solution)
+        best_fitness = max([self.helper.fitness(individual) for individual in population])
+        best_individual = population[np.argmax([self.helper.fitness(individual) for individual in population])]
+              
+        return best_fitness, best_individual
