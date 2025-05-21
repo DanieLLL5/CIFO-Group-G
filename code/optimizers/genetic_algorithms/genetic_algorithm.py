@@ -1,4 +1,4 @@
-Aimport random
+import random
 import numpy as np
 
 class GeneticAlgorithm:
