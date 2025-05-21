@@ -55,44 +55,40 @@ def mutation(individual, helper, swap=True, table_flip=True, relationship_augmen
         for i in range(len(individual_transformed)):
             individual[individual_transformed[i][1]].append(i+1)
 
-
     elif mutation == "relationship_augmenter":
-        #In this mutation we will swap a guest to a table that is likely to have another guest they have a positive relationship with
-        guest_table=0
-        related_guest_table=0
-        #this loop resets the process everytime the guests we want to put in the same table are already in the same table
-        while guest_table == related_guest_table:
+        guest_table = 0
+        related_guest_table = 0
 
-            #this is the random guest we will want to swap to another table with a closer number (more likely to have a positive relationship)
+        while guest_table == related_guest_table:
             guest_table = random.choice(range(len(individual)))
             guest_seating = random.choice(range(len(individual[guest_table])))
             guest = individual[guest_table][guest_seating]
 
-            #the related guest will always be the next numbered guest, unless we have the last guest 64th that will have 63 being their related guest
-            if guest != 64:
-                related_guest = guest+1
-            else:
-                related_guest = 63
+            related_guest = guest + 1 if guest != 64 else 63
 
-
-            #we use this code to obtain the positioning of the related_guest!
-
-            #will represent the table
+            # Find where the related guest is
+            related_guest_found = False
             for i in range(len(individual)):
-                #will represent the individual
                 for j in range(len(individual[i])):
                     if individual[i][j] == related_guest:
                         related_guest_table = i
                         related_guest_seating = j
+                        related_guest_found = True
+                        break
+                if related_guest_found:
+                    break
+            else:
+                # related_guest was not found, fallback
+                raise ValueError(f"Related guest {related_guest} not found in individual.")
 
-        #Lastly we perform the switch
+        # Swap with someone from related guest table (not the related guest)
+        options = [x for x in range(len(individual[related_guest_table])) if x != related_guest_seating]
+        if not options:
+            raise ValueError("No valid swap candidates found (everyone at the table is the related guest).")
 
-        #we choose a random individual from the related guest table to swap with our guest (that isn't our related guest!)
-        swapped_guest = individual[related_guest_table][random.choice([x for x in range(len(individual[related_guest_table])) if x != related_guest_seating])]
-        #we remove our guest and swapped guest from the respective tables
+        swapped_guest = individual[related_guest_table][random.choice(options)]
         individual[guest_table].remove(guest)
         individual[related_guest_table].remove(swapped_guest)
-        #lastly we add them to their new tables effectively swapping them
         individual[related_guest_table].append(guest)
         individual[guest_table].append(swapped_guest)
 
