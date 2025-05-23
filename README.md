@@ -43,7 +43,7 @@ General-purpose modules and helpers.
 
 ### Other Files
 
-- **`Wedding Setting Optimization.zip`** – Zip version of the Jupyter Notebook (this was required to be a zip, because the initial file add more than 25MB, so it was impossible to put it on GitHub as a native Jupyter Notebook file.
+- **`Wedding Setting Optimization.zip`** – Zip version of the Jupyter Notebook (this was required to be a zip, because the initial file add more than 25MB, so it was impossible to put it on GitHub as a native Jupyter Notebook file).
 - **`data/`** – Folder intended for input dataset.
 - **`figures/`** – Folder that stores images that can help understand better the problem and the fitnesses.
 
