@@ -40,7 +40,7 @@ class SimulatedAnnealingOptimizer:
             #The more fit the solution, the higher the likelihood of switching
             for neighbour, neighbour_fit in neighbours_fitness:
                 delta = abs(current_fit - neighbour_fit)
-                if random.random() < math.exp(delta / temperature):
+                if random.random() < math.exp(-delta / temperature):
                     current_sol = neighbour
                     break
 	        #By doing this we make sure the algorithm isn't stuck and after not improving for too long it stops
